@@ -5,33 +5,18 @@ edition = "2021"
 authors = ["AUDD Team"]
 license = "MIT"
 description = "Native Node.js addon for AUDD"
-repository = "https://github.com/your-org/audd-node"
+repository = "https://github.com/jmcasimar/audd-node"
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
-# Core AUDD crates - Configurar según tu setup:
-# Opción 1: Desde crates.io (cuando se publiquen)
-# audd_ir = "0.1"
-# audd_compare = "0.1"
-# audd_resolution = "0.1"
-# audd_adapters_file = "0.1"
-# audd_adapters_db = { version = "0.1", default-features = false, features = ["sqlite", "mysql", "postgres"] }
-#
-# Opción 2: Desde Git
-# audd_ir = { git = "https://github.com/jmcasimar/audd-core", branch = "main" }
-# audd_compare = { git = "https://github.com/jmcasimar/audd-core", branch = "main" }
-# audd_resolution = { git = "https://github.com/jmcasimar/audd-core", branch = "main" }
-# audd_adapters_file = { git = "https://github.com/jmcasimar/audd-core", branch = "main" }
-# audd_adapters_db = { git = "https://github.com/jmcasimar/audd-core", branch = "main", default-features = false, features = ["sqlite", "mysql", "postgres"] }
-#
-# Opción 3: Path local (para desarrollo, ajustar ruta según ubicación del repo audd-core)
-# audd_ir = { path = "../../../../audd-core/crates/audd_ir" }
-# audd_compare = { path = "../../../../audd-core/crates/audd_compare" }
-# audd_resolution = { path = "../../../../audd-core/crates/audd_resolution" }
-# audd_adapters_file = { path = "../../../../audd-core/crates/audd_adapters_file" }
-# audd_adapters_db = { path = "../../../../audd-core/crates/audd_adapters_db", default-features = false, features = ["sqlite", "mysql", "postgres"] }
+# Core AUDD crates desde Git
+audd_ir = { git = "https://github.com/jmcasimar/audd", branch = "main" }
+audd_compare = { git = "https://github.com/jmcasimar/audd", branch = "main" }
+audd_resolution = { git = "https://github.com/jmcasimar/audd", branch = "main" }
+audd_adapters_file = { git = "https://github.com/jmcasimar/audd", branch = "main" }
+audd_adapters_db = { git = "https://github.com/jmcasimar/audd", branch = "main", default-features = false, features = ["sqlite", "mysql", "postgres"] }
 
 # N-API bindings
 napi = { version = "2.16.0", default-features = false, features = ["napi8", "async", "error_anyhow"] }

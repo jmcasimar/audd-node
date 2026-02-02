@@ -26,8 +26,9 @@ describe('Integration: End-to-end workflow', () => {
     expect(typeof irA).toBe('string');
 
     const irAParsed = JSON.parse(irA);
-    expect(irAParsed.version).toBeDefined();
-    expect(irAParsed.source).toBeDefined();
+    expect(irAParsed.ir_version).toBeDefined();
+    expect(irAParsed.source_name).toBeDefined();
+    expect(irAParsed.entities).toBeDefined();
 
     // 2. Build IR B
     const irB = await engine.buildIR({
@@ -49,8 +50,10 @@ describe('Integration: End-to-end workflow', () => {
 
     expect(diff).toBeDefined();
     const diffParsed = JSON.parse(diff);
-    expect(diffParsed.version).toBeDefined();
-    expect(diffParsed.changes).toBeDefined();
+    expect(diffParsed.summary).toBeDefined();
+    expect(diffParsed.matches).toBeDefined();
+    expect(diffParsed.exclusives).toBeDefined();
+    expect(diffParsed.conflicts).toBeDefined();
 
     // 4. Propose resolution
     const plan = await engine.proposeResolution(diff, {

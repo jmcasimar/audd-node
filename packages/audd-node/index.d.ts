@@ -43,59 +43,15 @@ export interface ApplyOptions {
   /** Configuración adicional en JSON */
   config?: string
 }
-/**
- * Construir IR desde una fuente
- *
- * # Argumentos
- * * `options` - Opciones de construcción
- *
- * # Returns
- * JSON string con la representación IR
- */
+/** Construir IR desde una fuente */
 export declare function buildIr(options: BuildIrOptions): Promise<string>
-/**
- * Comparar dos IRs
- *
- * # Argumentos
- * * `ir_a_json` - JSON del IR A
- * * `ir_b_json` - JSON del IR B
- * * `options` - Opciones de comparación
- *
- * # Returns
- * JSON string con el resultado de la diferencia
- */
+/** Comparar dos IRs */
 export declare function compare(irAJson: string, irBJson: string, options?: CompareOptions | undefined | null): Promise<string>
-/**
- * Proponer plan de resolución desde un diff
- *
- * # Argumentos
- * * `diff_json` - JSON del diff
- * * `options` - Opciones de resolución
- *
- * # Returns
- * JSON string con el plan de resolución
- */
+/** Proponer plan de resolución */
 export declare function proposeResolution(diffJson: string, options?: ResolveOptions | undefined | null): Promise<string>
-/**
- * Aplicar un plan de resolución
- *
- * # Argumentos
- * * `plan_json` - JSON del plan
- * * `options` - Opciones de aplicación
- *
- * # Returns
- * JSON string con el resultado de la aplicación
- */
+/** Aplicar resolución */
 export declare function applyResolution(planJson: string, options?: ApplyOptions | undefined | null): Promise<string>
-/**
- * Validar un IR JSON
- *
- * # Argumentos
- * * `ir_json` - JSON del IR a validar
- *
- * # Returns
- * JSON con resultado de validación { ok: bool, errors: string[] }
- */
+/** Validar IR */
 export declare function validateIr(irJson: string): Promise<string>
 /** Versión del addon nativo */
 export declare function version(): string

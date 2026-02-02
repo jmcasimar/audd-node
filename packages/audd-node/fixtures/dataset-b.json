@@ -1,0 +1,25 @@
+{
+  "users": [
+    {
+      "user_id": 1,
+      "full_name": "Alice Johnson",
+      "email_address": "alice@example.com",
+      "years": 28,
+      "is_active": true
+    },
+    {
+      "user_id": 2,
+      "full_name": "Bob Smith",
+      "email_address": "bob@example.com",
+      "years": 34,
+      "is_active": false
+    },
+    {
+      "user_id": 4,
+      "full_name": "Diana Prince",
+      "email_address": "diana@example.com",
+      "years": 30,
+      "is_active": true
+    }
+  ]
+}
