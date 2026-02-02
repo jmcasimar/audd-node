@@ -1,5 +1,4 @@
-{
-  "users": [
+[
     {
       "user_id": 1,
       "full_name": "Alice Johnson",
@@ -21,5 +20,4 @@
       "years": 30,
       "is_active": true
     }
-  ]
-}
+]
