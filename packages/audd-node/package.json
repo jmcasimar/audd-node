@@ -1,0 +1,77 @@
+{
+  "name": "@audd/node",
+  "version": "0.1.0",
+  "description": "Node.js wrapper para AUDD (Automated Universal Data Diff)",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "native/*.node",
+    "README.md",
+    "LICENSE"
+  ],
+  "napi": {
+    "name": "audd-native",
+    "triples": {
+      "defaults": true,
+      "additional": [
+        "x86_64-unknown-linux-musl",
+        "aarch64-unknown-linux-gnu",
+        "aarch64-apple-darwin",
+        "aarch64-pc-windows-msvc"
+      ]
+    }
+  },
+  "scripts": {
+    "build": "pnpm build:native && pnpm build:ts",
+    "build:native": "napi build --platform --release --cargo-cwd native",
+    "build:ts": "tsup",
+    "build:debug": "napi build --platform --cargo-cwd native",
+    "dev": "napi build --platform --watch --cargo-cwd native",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write \"src/**/*.{ts,json}\"",
+    "clean": "rimraf dist native/*.node",
+    "prepublishOnly": "pnpm build",
+    "universal": "napi universal",
+    "version": "napi version"
+  },
+  "keywords": [
+    "audd",
+    "diff",
+    "data",
+    "reconciliation",
+    "napi",
+    "rust"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@napi-rs/cli": "^2.18.0",
+    "@types/node": "^20.11.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "@vitest/coverage-v8": "^1.2.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.2.4",
+    "rimraf": "^5.0.5",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  }
+}

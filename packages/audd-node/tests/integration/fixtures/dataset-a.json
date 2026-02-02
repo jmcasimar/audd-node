@@ -1,0 +1,30 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Alice Johnson",
+      "email": "alice@example.com",
+      "age": 28,
+      "active": true
+    },
+    {
+      "id": 2,
+      "name": "Bob Smith",
+      "email": "bob@example.com",
+      "age": 35,
+      "active": true
+    },
+    {
+      "id": 3,
+      "name": "Charlie Brown",
+      "email": "charlie@example.com",
+      "age": 42,
+      "active": false
+    }
+  ],
+  "metadata": {
+    "version": "1.0",
+    "created": "2026-01-01T00:00:00Z",
+    "source": "system-a"
+  }
+}
