@@ -1,7 +1,7 @@
 {
   "name": "audd-workspace",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "description": "AUDD Node.js Wrapper - Workspace Root",
   "repository": {
     "type": "git",
