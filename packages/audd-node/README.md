@@ -1,21 +1,21 @@
-# @audd/node
+# audd-node
 
 Node.js wrapper para AUDD (Automated Universal Data Diff).
 
 ## Instalación
 
 ```bash
-npm install @audd/node
+npm install audd-node
 # o
-pnpm add @audd/node
+pnpm add audd-node
 # o
-yarn add @audd/node
+yarn add audd-node
 ```
 
 ## Inicio Rápido
 
 ```typescript
-import { AuddEngine } from '@audd/node';
+import { AuddEngine } from 'audd-node';
 
 const engine = new AuddEngine();
 

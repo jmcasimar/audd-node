@@ -1,5 +1,5 @@
 {
-  "name": "@audd/node",
+  "name": "audd-node",
   "version": "0.1.0",
   "description": "Node.js wrapper para AUDD (Automated Universal Data Diff)",
   "main": "./dist/index.js",

@@ -6,7 +6,7 @@ Se ha completado el **bootstrap completo** del wrapper de Node.js para AUDD con:
 
 ### Estructura Implementada
 - ✅ Workspace pnpm configurado
-- ✅ Paquete `@audd/node` con TypeScript
+- ✅ Paquete `audd-node` con TypeScript
 - ✅ Addon nativo Rust (N-API con napi-rs)
 - ✅ SDK TypeScript completo (types, errors, API)
 - ✅ Adaptadores para archivos (JSON/CSV)
@@ -120,7 +120,7 @@ Si planeas crear UI:
    mkdir audd-electron
    cd audd-electron
    npm init -y
-   npm install electron @audd/node
+   npm install electron audd-node
    ```
 
 2. Sigue la guía en `packages/audd-node/docs/electron.md`

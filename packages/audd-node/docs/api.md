@@ -171,7 +171,7 @@ if (!validation.ok) {
 Factory para crear adaptadores de archivos.
 
 ```typescript
-import { AuddEngine, FileAdapterFactory } from '@audd/node';
+import { AuddEngine, FileAdapterFactory } from 'audd-node';
 
 const engine = new AuddEngine();
 const adapter = FileAdapterFactory.create(engine, 'json');
@@ -275,7 +275,7 @@ try {
 ### Helpers de Error
 
 ```typescript
-import { createError } from '@audd/node';
+import { createError } from 'audd-node';
 
 throw createError.invalidInput('Campo requerido', { field: 'name' });
 throw createError.unsupportedFormat('xml');
@@ -301,5 +301,5 @@ import type {
   ApplyResult,
   ValidationResult,
   ErrorCode
-} from '@audd/node';
+} from 'audd-node';
 ```

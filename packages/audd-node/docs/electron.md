@@ -5,7 +5,7 @@ Guía para integrar AUDD en aplicaciones Electron.
 ## Instalación
 
 ```bash
-pnpm add @audd/node
+pnpm add audd-node
 ```
 
 ## Arquitectura Recomendada
@@ -23,7 +23,7 @@ Usa IPC (Inter-Process Communication) para comunicar Renderer → Main.
 
 ```javascript
 const { app, BrowserWindow, ipcMain } = require('electron');
-const { AuddEngine } = require('@audd/node');
+const { AuddEngine } = require('audd-node');
 
 // Crear instancia global del engine
 const auddEngine = new AuddEngine();
@@ -260,11 +260,11 @@ Al empaquetar con `electron-builder`, asegúrate de incluir los binarios nativos
     "node_modules/**/*"
   ],
   "asarUnpack": [
-    "node_modules/@audd/node/native/*.node"
+    "node_modules/audd-node/native/*.node"
   ],
   "extraFiles": [
     {
-      "from": "node_modules/@audd/node/native",
+      "from": "node_modules/audd-node/native",
       "to": "Resources/native",
       "filter": ["*.node"]
     }
@@ -283,7 +283,7 @@ const path = require('path');
 const isDev = require('electron-is-dev');
 
 const nativeBindingPath = isDev
-  ? path.join(__dirname, '../node_modules/@audd/node/native/index.node')
+  ? path.join(__dirname, '../node_modules/audd-node/native/index.node')
   : path.join(process.resourcesPath, 'native/index.node');
 ```
 

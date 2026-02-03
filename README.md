@@ -50,7 +50,7 @@ pnpm test
 ### Uso Básico
 
 ```typescript
-import { AuddEngine } from '@audd/node';
+import { AuddEngine } from 'audd-node';
 
 // Inicializar motor
 const engine = new AuddEngine();

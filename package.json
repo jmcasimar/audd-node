@@ -1,5 +1,5 @@
 {
-  "name": "audd-workspace",
+  "name": "audd-node",
   "version": "0.1.0",
   "private": false,
   "description": "AUDD Node.js Wrapper - Workspace Root",
