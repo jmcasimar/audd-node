@@ -1,6 +1,6 @@
 {
   "name": "audd-node",
-  "version": "0.1.3",
+  "version": "0.1.6",
   "description": "Node.js wrapper para AUDD (Automated Universal Data Diff)",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
