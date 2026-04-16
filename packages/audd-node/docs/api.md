@@ -203,6 +203,8 @@ Factory para crear adaptadores de bases de datos.
 const adapter = DbAdapterFactory.create(engine, 'sqlite');
 ```
 
+También soporta: `'mysql'`, `'postgres'`, `'postgresql'`, `'mongodb'`.
+
 ### SQLiteAdapter
 
 ```typescript
@@ -241,6 +243,26 @@ const ir = await adapter.buildIR({
   username: 'user',
   password: 'pass',
   table: 'users'
+});
+```
+
+### MongoDBAdapter
+
+```typescript
+const adapter = new MongoDBAdapter(engine);
+
+// Opción 1: usando URI completa
+const irFromUri = await adapter.buildIR({
+  uri: 'mongodb://localhost:27017/mydb'
+});
+
+// Opción 2: usando parámetros separados
+const irFromConfig = await adapter.buildIR({
+  host: 'localhost',
+  port: 27017,
+  database: 'mydb',
+  username: 'user',
+  password: 'pass'
 });
 ```
 

@@ -6,6 +6,8 @@ import { AuddEngine } from '../index';
 import type { IR, DbSourceConfig } from '../types';
 import { createError } from '../errors';
 
+const DEFAULT_MONGODB_COLLECTION_PLACEHOLDER = '__all__';
+
 /**
  * Configuración para conexión SQLite
  */
@@ -29,12 +31,54 @@ export interface RemoteDbConfig {
 }
 
 /**
+ * Configuración para conexión MongoDB
+ */
+export interface MongoDBConfig {
+  uri?: string;
+  host?: string;
+  port?: number;
+  database?: string;
+  username?: string;
+  password?: string;
+  collection?: string;
+  options?: Record<string, string | number | boolean>;
+}
+
+/**
  * Adaptador base para bases de datos
  */
 abstract class DbAdapter {
   constructor(protected engine: AuddEngine) {}
 
-  abstract buildIR(config: SQLiteConfig | RemoteDbConfig): Promise<IR>;
+  abstract buildIR(config: SQLiteConfig | RemoteDbConfig | MongoDBConfig): Promise<IR>;
+
+  protected toSqlConnectionString(
+    config: RemoteDbConfig,
+    scheme: 'mysql' | 'postgres',
+    defaultPort: number
+  ): string {
+    if (!config.username || !config.password || !config.database) {
+      throw createError.invalidInput(
+        `${scheme} connection requires username, password, and database`
+      );
+    }
+
+    const username = encodeURIComponent(config.username);
+    const password = encodeURIComponent(config.password);
+    const database = encodeURIComponent(config.database);
+    const host = this.formatHost(config.host);
+    const port = config.port ?? defaultPort;
+
+    return `${scheme}://${username}:${password}@${host}:${port}/${database}`;
+  }
+
+  protected formatHost(host: string): string {
+    if (host.includes(':') && !host.startsWith('[') && !host.endsWith(']')) {
+      return `[${host}]`;
+    }
+
+    return host;
+  }
 }
 
 /**
@@ -58,7 +102,7 @@ export class SQLiteAdapter extends DbAdapter {
       const sourceConfig: DbSourceConfig = {
         type: 'db',
         format: 'sqlite',
-        path: config.path,
+        path: this.toSQLiteConnectionString(config.path),
         table: config.table,
         query: config.query,
       };
@@ -87,6 +131,24 @@ export class SQLiteAdapter extends DbAdapter {
       return false;
     }
   }
+
+  private toSQLiteConnectionString(path: string): string {
+    if (path.startsWith('sqlite://')) {
+      return path;
+    }
+
+    const normalizedPath = path.replaceAll('\\', '/');
+
+    if (normalizedPath.startsWith('/')) {
+      return `sqlite://${normalizedPath}`;
+    }
+
+    if (/^[A-Za-z]:\//.test(normalizedPath)) {
+      return `sqlite:///${normalizedPath}`;
+    }
+
+    return `sqlite://${normalizedPath}`;
+  }
 }
 
 /**
@@ -103,11 +165,7 @@ export class MySQLAdapter extends DbAdapter {
       const sourceConfig: DbSourceConfig = {
         type: 'db',
         format: 'mysql',
-        host: config.host,
-        port: config.port ?? 3306,
-        database: config.database,
-        username: config.username,
-        password: config.password,
+        path: this.toSqlConnectionString(config, 'mysql', 3306),
         table: config.table,
         query: config.query,
       };
@@ -149,11 +207,7 @@ export class PostgreSQLAdapter extends DbAdapter {
       const sourceConfig: DbSourceConfig = {
         type: 'db',
         format: 'postgres',
-        host: config.host,
-        port: config.port ?? 5432,
-        database: config.database,
-        username: config.username,
-        password: config.password,
+        path: this.toSqlConnectionString(config, 'postgres', 5432),
         table: config.table,
         query: config.query,
       };
@@ -182,12 +236,98 @@ export class PostgreSQLAdapter extends DbAdapter {
 }
 
 /**
+ * Alias por conveniencia para usar el nombre "PostgresAdapter"
+ * en lugar de "PostgreSQLAdapter".
+ */
+export class PostgresAdapter extends PostgreSQLAdapter {}
+
+/**
+ * Adaptador para MongoDB
+ */
+export class MongoDBAdapter extends DbAdapter {
+  /**
+   * Construye IR desde una base MongoDB
+   */
+  async buildIR(config: MongoDBConfig): Promise<IR> {
+    try {
+      this.validateMongoConfig(config);
+
+      const sourceConfig: DbSourceConfig = {
+        type: 'db',
+        format: 'mongodb',
+        path: this.toConnectionString(config),
+        table: config.collection ?? DEFAULT_MONGODB_COLLECTION_PLACEHOLDER,
+      };
+
+      return this.engine.buildIR({ source: sourceConfig });
+    } catch (error) {
+      if (error instanceof Error && 'code' in error) {
+        throw error;
+      }
+
+      throw createError.dbConnectionFailed(
+        `Failed to connect to MongoDB: ${(error as Error).message}`,
+        config.uri
+          ? { uri: config.uri }
+          : { host: config.host, database: config.database }
+      );
+    }
+  }
+
+  private validateMongoConfig(config: MongoDBConfig): void {
+    if (config.uri) {
+      return;
+    }
+
+    if (!config.host) {
+      throw createError.invalidInput('MongoDB host is required when uri is not provided');
+    }
+
+    if (!config.database) {
+      throw createError.invalidInput('MongoDB database is required when uri is not provided');
+    }
+
+    if (config.password && !config.username) {
+      throw createError.invalidInput('MongoDB username is required when password is provided');
+    }
+
+    if (config.username && !config.password) {
+      throw createError.invalidInput('MongoDB password is required when username is provided');
+    }
+  }
+
+  private toConnectionString(config: MongoDBConfig): string {
+    if (config.uri) {
+      return config.uri;
+    }
+
+    const host = this.formatHost(config.host as string);
+    const database = encodeURIComponent(config.database as string);
+    const port = config.port ?? 27017;
+
+    const credentials = config.username
+      ? `${encodeURIComponent(config.username)}:${encodeURIComponent(config.password as string)}@`
+      : '';
+
+    const queryString = config.options
+      ? new URLSearchParams(
+          Object.entries(config.options).map(
+            ([key, value]) => [key, String(value)] as [string, string]
+          )
+        ).toString()
+      : '';
+
+    return `mongodb://${credentials}${host}:${port}/${database}${queryString ? `?${queryString}` : ''}`;
+  }
+}
+
+/**
  * Factory para crear adaptadores de BD
  */
 export class DbAdapterFactory {
   static create(
     engine: AuddEngine,
-    format: 'sqlite' | 'mysql' | 'postgres'
+    format: 'sqlite' | 'mysql' | 'postgres' | 'postgresql' | 'mongodb'
   ): DbAdapter {
     switch (format) {
       case 'sqlite':
@@ -195,7 +335,10 @@ export class DbAdapterFactory {
       case 'mysql':
         return new MySQLAdapter(engine);
       case 'postgres':
+      case 'postgresql':
         return new PostgreSQLAdapter(engine);
+      case 'mongodb':
+        return new MongoDBAdapter(engine);
       default:
         throw createError.unsupportedFormat(format);
     }

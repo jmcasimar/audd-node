@@ -25,7 +25,14 @@ export type SourceType = 'file' | 'db' | 'memory';
 /**
  * Formato de datos soportado
  */
-export type DataFormat = 'json' | 'csv' | 'sqlite' | 'mysql' | 'postgres';
+export type DataFormat =
+  | 'json'
+  | 'csv'
+  | 'sqlite'
+  | 'mysql'
+  | 'postgres'
+  | 'postgresql'
+  | 'mongodb';
 
 /**
  * Configuración de fuente de archivo
@@ -44,9 +51,9 @@ export interface FileSourceConfig {
  */
 export interface DbSourceConfig {
   type: 'db';
-  format: 'sqlite' | 'mysql' | 'postgres';
-  path?: string; // Para SQLite
-  host?: string; // Para MySQL/Postgres
+  format: 'sqlite' | 'mysql' | 'postgres' | 'postgresql' | 'mongodb';
+  path?: string; // Connection string (sqlite/mysql/postgres/mongodb)
+  host?: string; // Compatibilidad legacy
   port?: number;
   database?: string;
   username?: string;
