@@ -187,10 +187,6 @@ export class AuddEngine {
     }
 
     if (source.type === 'db') {
-      if (!('table' in source) || !source.table) {
-        throw createError.invalidInput('Database source requires table');
-      }
-
       if (source.format === 'sqlite') {
         if (!('path' in source) || !source.path) {
           throw createError.invalidInput('SQLite source requires path');

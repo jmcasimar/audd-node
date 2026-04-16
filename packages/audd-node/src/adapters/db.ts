@@ -6,14 +6,12 @@ import { AuddEngine } from '../index';
 import type { IR, DbSourceConfig } from '../types';
 import { createError } from '../errors';
 
-const DEFAULT_MONGODB_COLLECTION_PLACEHOLDER = '__all__';
-
 /**
  * Configuración para conexión SQLite
  */
 export interface SQLiteConfig {
   path: string;
-  table: string;
+  table?: string; // Opcional: si se omite se extraen todas las tablas
   query?: string;
 }
 
@@ -26,7 +24,7 @@ export interface RemoteDbConfig {
   database: string;
   username: string;
   password: string;
-  table: string;
+  table?: string; // Opcional: si se omite se extraen todas las tablas
   query?: string;
 }
 
@@ -93,9 +91,6 @@ export class SQLiteAdapter extends DbAdapter {
       // Validar configuración
       if (!config.path) {
         throw createError.invalidInput('SQLite path is required');
-      }
-      if (!config.table && !config.query) {
-        throw createError.invalidInput('Either table or query is required');
       }
 
       // Construir config para el engine
@@ -187,9 +182,6 @@ export class MySQLAdapter extends DbAdapter {
     if (!config.database) throw createError.invalidInput('MySQL database is required');
     if (!config.username) throw createError.invalidInput('MySQL username is required');
     if (!config.password) throw createError.invalidInput('MySQL password is required');
-    if (!config.table && !config.query) {
-      throw createError.invalidInput('Either table or query is required');
-    }
   }
 }
 
@@ -229,9 +221,6 @@ export class PostgreSQLAdapter extends DbAdapter {
     if (!config.database) throw createError.invalidInput('PostgreSQL database is required');
     if (!config.username) throw createError.invalidInput('PostgreSQL username is required');
     if (!config.password) throw createError.invalidInput('PostgreSQL password is required');
-    if (!config.table && !config.query) {
-      throw createError.invalidInput('Either table or query is required');
-    }
   }
 }
 
@@ -256,7 +245,7 @@ export class MongoDBAdapter extends DbAdapter {
         type: 'db',
         format: 'mongodb',
         path: this.toConnectionString(config),
-        table: config.collection ?? DEFAULT_MONGODB_COLLECTION_PLACEHOLDER,
+        table: config.collection,
       };
 
       return this.engine.buildIR({ source: sourceConfig });
@@ -301,12 +290,12 @@ export class MongoDBAdapter extends DbAdapter {
       return config.uri;
     }
 
-    const host = this.formatHost(config.host as string);
-    const database = encodeURIComponent(config.database as string);
+    const host = this.formatHost(config.host!);
+    const database = encodeURIComponent(config.database!);
     const port = config.port ?? 27017;
 
     const credentials = config.username
-      ? `${encodeURIComponent(config.username)}:${encodeURIComponent(config.password as string)}@`
+      ? `${encodeURIComponent(config.username)}:${encodeURIComponent(config.password!)}@`
       : '';
 
     const queryString = config.options

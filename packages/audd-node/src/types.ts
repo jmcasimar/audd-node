@@ -58,7 +58,7 @@ export interface DbSourceConfig {
   database?: string;
   username?: string;
   password?: string;
-  table: string;
+  table?: string; // Opcional: nombre de tabla/colección específica; si se omite se extraen todas las entidades
   query?: string; // Opcional: query SQL personalizado
 }
 
