@@ -64,18 +64,19 @@ describe('AuddEngine', () => {
       ).rejects.toThrow('File source requires path');
     });
 
-    it('should throw on db source without table', async () => {
+    it('should proceed without table for db source', async () => {
+      // table is optional — the engine will extract the full database schema.
+      // The call will fail here because /some/path doesn't exist, but that is
+      // a filesystem error, not a "table required" validation error.
       await expect(
         engine.buildIR({
           source: {
             type: 'db',
             format: 'sqlite',
             path: '/some/path',
-            // @ts-expect-error - Testing invalid input
-            table: undefined,
           },
         })
-      ).rejects.toThrow('Database source requires table');
+      ).rejects.not.toThrow('Database source requires table');
     });
   });
 

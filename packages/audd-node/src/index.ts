@@ -187,17 +187,20 @@ export class AuddEngine {
     }
 
     if (source.type === 'db') {
-      if (!('table' in source) || !source.table) {
-        throw createError.invalidInput('Database source requires table');
-      }
-
       if (source.format === 'sqlite') {
         if (!('path' in source) || !source.path) {
           throw createError.invalidInput('SQLite source requires path');
         }
-      } else if (source.format === 'mysql' || source.format === 'postgres') {
-        if (!('host' in source) || !source.host) {
-          throw createError.invalidInput(`${source.format} source requires host`);
+      } else if (
+        source.format === 'mysql' ||
+        source.format === 'postgres' ||
+        source.format === 'postgresql' ||
+        source.format === 'mongodb'
+      ) {
+        if (!('path' in source) || !source.path) {
+          throw createError.invalidInput(
+            `${source.format} source requires path (connection string)`
+          );
         }
       }
     }
